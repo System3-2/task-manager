@@ -14,6 +14,7 @@ function getLocalStorage() {
 }
 function App() {
   const [title, setTitle] = useState('');
+  const [time, setTime] = useState('');
   const [list, setList] = useState(getLocalStorage());
   const [editing, setIsEditing] = useState(false);
   const [editID, setEditID] = useState(null);
@@ -26,30 +27,30 @@ function App() {
 
     if (!title) {
       setAlert(true, 'danger', 'Please enter a task')
-      console.log(alert);
     }
     else if (title && editing) {
       setList(
         list.map((item) => {
           if (item.id === editID) {
-            return { ...item, title: title };
+            return { ...item, title: title, date: time || date.toLocaleString() };
           }
           return item;
         })
       );
       setTitle("");
+      setTime('');
       setEditID(null);
       setIsEditing(false);
       setShowModal(false)
       showAlert(true, "emerald-500", "value changed");
     }
     else {
-      const newList = { id: date.getTime(), title: title, date: date.toLocaleString() };
+      const newList = { id: date.getTime(), title: title, date: time || date.toLocaleString() };
       setList([...list, newList])
       setShowModal(false)
       setTitle('');
+      setTime('');
       showAlert(true, "emerald-500", "Task added");
-      console.log(list);
 
     }
   }
@@ -134,7 +135,14 @@ function App() {
                     name="task"
                     id="tasks"
                     placeholder="Add Task"
+                    required
                     className="m-6 px-4 py-2 outline-2 border-3 border-slate-900 bg-slate-200 rounded-sm" />
+
+                  <input onChange={(e) => setTime(e.target.value)} value={time}
+                    type="text"
+                    placeholder="date"
+                    className="m-6 px-4 py-2 outline-2 border-3 border-slate-900 bg-slate-200 rounded-sm" />
+
                   <button type="submit"
                     className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 mx-6 md:mx-1"
                   // onClick={() => setShowModal(false)}
